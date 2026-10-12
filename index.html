@@ -71,11 +71,8 @@ const L=[["Oseias e Ariane",""],["Felipe e Morgana",""],["Queila e Wilson","Diá
 const BOM=["Sim","Mais ou menos","Não"],OUVE=["Sim, sempre","Às vezes","Raramente","Não"];
 const F=["Comunicação","Organização","Motivar a equipe","Tomar decisões","Dar o exemplo","Resolver conflitos","Ouvir as pessoas"];
 const M=["Ouvir mais","Comunicação","Organização","Paciência","Dar feedback","Reconhecer o trabalho dos outros","Tomar decisões"];
-const FORM_ID="262838356203055";
-const CAMPOS={lider:"q2_dropdown0",bom:"q3_radio1",ouve:"q4_radio2",fortes:"q5_checkbox3",melhorar:"q6_checkbox4",comentario:"q7_textarea5"};
-// Campos novos (nome e departamento): enviados sob vários nomes prováveis; o Jotform ignora os que não existem.
-const CAND=(t)=>{const a=[];for(let q=9;q<=16;q++)for(let i=5;i<=11;i++)a.push("q"+q+"_"+t+i);return a};
-const DEPN=CAND("dropdown"),NOMEN=CAND("textbox");
+const FORM_ID="262846591476067";
+const CAMPOS={nome:"q2_textbox0",dep:"q3_dropdown1",lider:"q4_dropdown2",bom:"q5_radio3",ouve:"q6_radio4",fortes:"q7_checkbox5",melhorar:"q8_checkbox6",comentario:"q9_textarea7"}; // nomes dos campos no Jotform
 const DEPS=L.filter(x=>x[1]).map(x=>x[1]).concat(["Não participo de nenhum departamento"]);
 const CHAVE="verbo_votou",LIBERAR="verbo21"; // para liberar um aparelho: abra o site com ?liberar=verbo21
 try{if(new URLSearchParams(location.search).get("liberar")===LIBERAR)localStorage.removeItem(CHAVE)}catch(e){}
@@ -139,7 +136,7 @@ async function postar(v,r){
  r=r||{f:[],m:[]};
  const fd=new FormData(),add=(k,x)=>fd.append(k,x),ar=k=>k.endsWith("[]")?k:k+"[]";
  add("formID",FORM_ID);add("simple_spc",FORM_ID+"-"+FORM_ID);add(CAMPOS.lider,v);
- NOMEN.forEach(k=>add(k,NOME));DEPN.forEach(k=>add(k,DEPT));
+ add(CAMPOS.nome,NOME);add(CAMPOS.dep,DEPT);
  if(r.bom!==undefined)add(CAMPOS.bom,BOM[r.bom]);
  if(r.ouve!==undefined)add(CAMPOS.ouve,OUVE[r.ouve]);
  r.f.forEach(i=>add(ar(CAMPOS.fortes),F[i]));r.m.forEach(i=>add(ar(CAMPOS.melhorar),M[i]));
