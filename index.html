@@ -111,8 +111,8 @@ function confirma(){
 }
 const FORM_ID="262838356203055";
 const FORM="https://form.jotform.com/"+FORM_ID;
-// Nomes internos dos campos no Jotform (ex.: "q3_lider"). Enquanto estiverem vazios, a urna abre o formulário para concluir o voto.
-const CAMPOS={lider:"",bom:"",ouve:"",fortes:"",melhorar:"",comentario:""};
+// Nomes internos dos campos do formulário no Jotform. Se ficarem vazios, a urna abre o formulário para concluir o voto.
+const CAMPOS={lider:"q2_dropdown0",bom:"q3_radio1",ouve:"q4_radio2",fortes:"q5_checkbox3",melhorar:"q6_checkbox4",comentario:"q7_textarea5"};
 const pronto=()=>Object.values(CAMPOS).every(Boolean);
 const rot=i=>num(i)+" - "+L[i][0]+(L[i][1]?" ("+L[i][1]+")":"");
 const chk=(n,a)=>a.map((o,i)=>'<label><input type="checkbox" name="'+n+'" value="'+i+'"> '+o+'</label>').join("");
@@ -136,7 +136,7 @@ function enviar(p){
 }
 async function postar(v,r){
  const fd=new FormData(),add=(k,x)=>fd.append(k,x);
- add("formID",FORM_ID);add(CAMPOS.lider,v);
+ add("formID",FORM_ID);add("simple_spc",FORM_ID+"-"+FORM_ID);add(CAMPOS.lider,v);
  if(r.bom!=="")add(CAMPOS.bom,BOM[r.bom]);
  if(r.ouve!=="")add(CAMPOS.ouve,OUVE[r.ouve]);
  const ar=k=>k.endsWith("[]")?k:k+"[]";
@@ -150,7 +150,7 @@ async function fim(v,r){
  modo="x";render();
  beep(600,150);setTimeout(()=>beep(600,350),180);
  const h='<h2>✅ Voto registrado</h2><p><b>'+v+'</b></p>';
- const fb='<p>Toque em <b>Enviar meu voto</b> para concluir.</p><a class="btn" target="_blank" rel="noopener" href="'+FORM+'?lider='+encodeURIComponent(v)+'">Enviar meu voto</a>';
+ const fb='<p>Toque em <b>Enviar meu voto</b> para concluir.</p><a class="btn" target="_blank" rel="noopener" href="'+FORM+'?dropdown0='+encodeURIComponent(v)+'">Enviar meu voto</a>';
  const nv='<button class="btn sec" onclick="novo()">Novo voto</button>';
  $("modal").style.display="flex";
  if(!pronto()){$("mb").innerHTML=h+fb+nv;return}
