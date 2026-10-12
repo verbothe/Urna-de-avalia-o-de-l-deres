@@ -22,7 +22,8 @@ body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-
 .box{width:44px;height:54px;border:2px solid #111;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.9rem;font-weight:800;background:#fff}
 .box.cur{border-color:var(--amb);box-shadow:0 0 0 3px rgba(245,158,11,.35)}
 .info{display:flex;gap:12px;flex:1;align-items:flex-start}.txt{font-size:.95rem;flex:1}
-.foto{width:84px;height:104px;border-radius:12px;background:linear-gradient(160deg,var(--amb2),var(--ambd));display:flex;align-items:center;justify-content:center;font-size:2.4rem;font-weight:800;color:#111;flex:none}
+.foto{position:relative;overflow:hidden;width:96px;height:120px;border-radius:12px;background:linear-gradient(160deg,var(--amb2),var(--ambd));display:flex;align-items:center;justify-content:center;font-size:2.4rem;font-weight:800;color:#111;flex:none}
+.foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .rodape{border-top:1px solid #d9d4c6;margin-top:10px;padding-top:8px;font-size:.74rem;color:#555}
 .aviso{font-size:1.35rem;font-weight:800;text-align:center;margin:auto 0}.aviso small{font-weight:500;font-size:.85rem}
 .fim{font-size:4rem;font-weight:900;text-align:center;margin:auto 0;letter-spacing:.1em}
@@ -51,12 +52,13 @@ body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-
 .chip span{display:block;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;font-size:.9rem}
 .chip input:checked+span{background:var(--amb);border-color:var(--amb);color:#111;font-weight:700}
 .chip input:focus-visible+span{outline:3px solid rgba(245,158,11,.5)}
+.passo{display:inline-block;background:var(--amb);color:#111;font-weight:800;font-size:.78rem;border-radius:999px;padding:3px 12px;margin:0 0 10px}
 .er{color:#dc2626;font-size:.88rem;min-height:1.3em;margin:8px 0 0;font-weight:600}
 .btn{background:var(--ink);color:var(--amb2);border:2px solid var(--amb);border-radius:12px;padding:12px 20px;font-size:1rem;font-weight:800;cursor:pointer;margin:10px 8px 0 0}
 .btn.pri{background:var(--amb);color:#111}.btn:disabled{opacity:.55}
 </style></head>
 <body>
-<header class="top"><h1>Igreja Verbo da Vida - Marcolândia/PI</h1><p>Urna de avaliação de líderes · dinâmica de comunhão entre líderes e liderados</p></header>
+<header class="top"><h1>Igreja Verbo da Vida - Marcolândia/PI</h1><p>Votação dos 3 melhores líderes · dinâmica de comunhão entre líderes e liderados</p></header>
 <main class="wrap">
  <section class="urna" aria-label="Urna eletrônica">
   <div class="tela" id="tela"></div>
@@ -68,38 +70,36 @@ body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-
 <div class="modal" id="modal"><div class="mbox" id="mb"></div></div>
 <script>
 const L=[["Oseias e Ariane",""],["Felipe e Morgana",""],["Queila e Wilson","Diáconos"],["Breno e Rebeca","Acolhe/Evangelismo"],["Dhjuam e Mariana","Abraço"],["Adairlan e Aline","Jovens e adolescentes"],["Venicius e Bruna","Infantil"],["Vanessa e Samy","Comunicação"],["Igor","Sonoplastia"],["Jonas","Louvor"],["Gil e Erlania","Social"],["Milene","Verbo Shop"],["Aparecida","Verbo Café"],["Maila","Connecte"],["Delzuite e Edna Gardênia","Oração"],["Queila","Eventos"],["Edna Gardênia e Janaína","Mulheres"],["Maycon e Érika","Gestão de Culto"],["Roberio","Segurança"],["Sandro","Trânsito"],["Paullo Rossi","Homens"]];
-const BOM=["Sim","Mais ou menos","Não"],OUVE=["Sim, sempre","Às vezes","Raramente","Não"];
-const F=["Comunicação","Organização","Motivar a equipe","Tomar decisões","Dar o exemplo","Resolver conflitos","Ouvir as pessoas"];
-const M=["Ouvir mais","Comunicação","Organização","Paciência","Dar feedback","Reconhecer o trabalho dos outros","Tomar decisões"];
-const FORM_ID="262846591476067";
-const CAMPOS={nome:"q2_textbox0",dep:"q3_dropdown1",lider:"q4_dropdown2",bom:"q5_radio3",ouve:"q6_radio4",fortes:"q7_checkbox5",melhorar:"q8_checkbox6",comentario:"q9_textarea7"}; // nomes dos campos no Jotform
+const FORM_ID="262847496013059";
+const CAMPOS={nome:"q2_textbox0",dep:"q3_dropdown1",v:["q4_dropdown2","q5_dropdown3","q6_dropdown4"]}; // nomes dos campos no Jotform
 const DEPS=L.filter(x=>x[1]).map(x=>x[1]).concat(["Não participo de nenhum departamento"]);
 const CHAVE="verbo_votou",LIBERAR="verbo21"; // para liberar um aparelho: abra o site com ?liberar=verbo21
 try{if(new URLSearchParams(location.search).get("liberar")===LIBERAR)localStorage.removeItem(CHAVE)}catch(e){}
 const jaVotou=()=>{try{return localStorage.getItem(CHAVE)==="1"}catch(e){return false}};
 const marcar=()=>{try{localStorage.setItem(CHAVE,"1")}catch(e){}};
-let d="",modo="v",ident=false,NOME="",DEPT="",ULT=null;
+let d="",modo="v",ident=false,NOME="",DEPT="",ESC=[],ESCN=[];
 const $=id=>document.getElementById(id);
 const num=i=>String(i+1).padStart(2,"0");
 const cand=()=>d.length===2&&+d>=1&&+d<=L.length?L[+d-1]:null;
 const rot=i=>num(i)+" - "+L[i][0]+(L[i][1]?" ("+L[i][1]+")":"");
 function beep(f,t){try{const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+t/1000)}catch(e){}}
+function fe(i){if(/\.jpg$/.test(i.src))i.src=i.src.replace(/\.jpg$/,".png");else i.style.display="none"} // tenta .jpg, depois .png; sem foto, mostra a inicial
 function render(){
  const t=$("tela");
  if(jaVotou()&&modo!=="x"){t.innerHTML='<div class="aviso">VOCÊ JÁ VOTOU<br><small>Obrigado por participar!</small></div>';return}
  if(!ident&&modo!=="x"){t.innerHTML='<div class="aviso">IDENTIFIQUE-SE<br>PARA VOTAR</div>';return}
  if(modo==="x"){t.innerHTML='<div class="fim">FIM</div>';return}
- let h='<div class="cargo">SEU VOTO PARA</div><div class="titulo">Líder</div>';
+ let h='<div class="cargo">SEU VOTO PARA</div><div class="titulo">Líder</div><div><span class="passo">Voto '+(ESC.length+1)+' de 3</span></div>';
  if(modo==="b")h+='<div class="aviso">VOTO EM BRANCO</div>';
  else{
   h+='<div class="num"><span class="l">Número:</span>';
   for(let i=0;i<2;i++)h+='<div class="box'+(i===d.length?' cur':'')+'">'+(d[i]||"")+'</div>';
   h+='</div>';
   if(d.length===2){const c=cand();
-   h+=c?'<div class="info"><div class="txt"><b>Líder(es):</b> '+c[0]+(c[1]?'<br><b>Departamento:</b> '+c[1]:'')+'</div><div class="foto">'+c[0][0]+'</div></div>'
-   :'<div class="info"><div class="txt"><b>NÚMERO ERRADO</b><br><b>VOTO NULO</b></div></div>'}
+   if(!c)h+='<div class="info"><div class="txt"><b>NÚMERO ERRADO</b><br><b>VOTO NULO</b></div></div>';
+   else h+='<div class="info"><div class="txt"><b>Líder(es):</b> '+c[0]+(c[1]?'<br><b>Departamento:</b> '+c[1]:'')+(ESCN.includes(d)?'<br><b style="color:#b91c1c">Você já escolheu este líder.</b>':'')+'</div><div class="foto"><span>'+c[0][0]+'</span><img src="'+d+'.jpg" alt="" onerror="fe(this)"></div></div>'}
  }
- h+='<div class="rodape">CONFIRMA para registrar este voto · CORRIGE para reiniciar</div>';
+ h+='<div class="rodape">'+(ESCN.filter(x=>x).length?'Já escolhidos: '+ESCN.filter(x=>x).join(", ")+' · ':'')+'CONFIRMA registra o voto · CORRIGE reinicia</div>';
  t.innerHTML=h;
 }
 const bloq=()=>jaVotou()||!ident;
@@ -108,55 +108,41 @@ function corrige(){if(modo==="x"||bloq())return;d="";modo="v";beep(500,80);rende
 function branco(){if(modo==="x"||bloq())return;d="";modo="b";beep(700,80);render()}
 function confirma(){
  if(modo==="x"||bloq())return;
- if(modo==="b")return fim("Voto em branco",null);
- if(d.length<2){beep(300,200);return}
- if(!cand())return fim("Voto nulo",null);
- modo="x";render();abrir();
+ let r,c="";
+ if(modo==="b")r="Voto em branco";
+ else{
+  if(d.length<2){beep(300,200);return}
+  if(!cand())r="Voto nulo";
+  else{if(ESCN.includes(d)){beep(300,300);return}r=rot(+d-1);c=d}
+ }
+ ESC.push(r);ESCN.push(c);d="";modo="v";beep(600,150);
+ if(ESC.length<3)render();else revisar();
 }
-const chk=(n,a)=>a.map((o,i)=>'<label class="chip"><input type="checkbox" name="'+n+'" value="'+i+'"><span>'+o+'</span></label>').join("");
-const rad=(n,a)=>a.map((o,i)=>'<label class="chip"><input type="radio" name="'+n+'" value="'+i+'"><span>'+o+'</span></label>').join("");
-const vals=n=>[...document.querySelectorAll('#mb [name="'+n+'"]:checked')].map(x=>x.value);
-function abrir(){
- const c=cand();
- $("mb").innerHTML='<h2>Avalie: '+c[0]+(c[1]?' ('+c[1]+')':'')+'</h2><small>Todas as perguntas são obrigatórias, exceto o comentário.</small>'
- +'<h3>É um bom líder?</h3><div class="chips">'+rad("bom",BOM)+'</div>'
- +'<h3>Ele ouve a equipe?</h3><div class="chips">'+rad("ouve",OUVE)+'</div>'
- +'<h3>No que o líder é bom? (marque uma ou mais)</h3><div class="chips">'+chk("f",F)+'</div>'
- +'<h3>O que precisa melhorar? (marque uma ou mais)</h3><div class="chips">'+chk("m",M)+'</div>'
- +'<h3>Comentário (opcional)</h3><textarea id="tx" rows="3" maxlength="300"></textarea>'
- +'<p class="er" id="er"></p><button class="btn pri" onclick="enviar()">Enviar avaliação e voto</button>';
+function revisar(){
+ modo="x";render();
+ $("mb").innerHTML='<h2>Confira seus 3 votos</h2><ol>'+ESC.map(x=>'<li>'+x+'</li>').join("")+'</ol>'
+ +'<button class="btn pri" onclick="enviar()">Enviar meus votos</button><button class="btn" onclick="refazer()">Refazer</button>';
  $("modal").style.display="flex";
 }
-function enviar(){
- const r={bom:vals("bom")[0],ouve:vals("ouve")[0],f:vals("f"),m:vals("m"),t:$("tx").value.trim().slice(0,300)};
- if(r.bom===undefined||r.ouve===undefined||!r.f.length||!r.m.length){$("er").textContent="Responda todas as perguntas para enviar.";return}
- fim(rot(+d-1),r);
-}
-async function postar(v,r){
- r=r||{f:[],m:[]};
- const fd=new FormData(),add=(k,x)=>fd.append(k,x),ar=k=>k.endsWith("[]")?k:k+"[]";
- add("formID",FORM_ID);add("simple_spc",FORM_ID+"-"+FORM_ID);add(CAMPOS.lider,v);
- add(CAMPOS.nome,NOME);add(CAMPOS.dep,DEPT);
- if(r.bom!==undefined)add(CAMPOS.bom,BOM[r.bom]);
- if(r.ouve!==undefined)add(CAMPOS.ouve,OUVE[r.ouve]);
- r.f.forEach(i=>add(ar(CAMPOS.fortes),F[i]));r.m.forEach(i=>add(ar(CAMPOS.melhorar),M[i]));
- if(r.t)add(CAMPOS.comentario,r.t);
+function refazer(){ESC=[];ESCN=[];d="";modo="v";$("modal").style.display="none";render()}
+async function postar(){
+ const fd=new FormData(),add=(k,x)=>fd.append(k,x);
+ add("formID",FORM_ID);add("simple_spc",FORM_ID+"-"+FORM_ID);add(CAMPOS.nome,NOME);add(CAMPOS.dep,DEPT);
+ ESC.forEach((x,i)=>add(CAMPOS.v[i],x));
  try{await fetch("https://submit.jotform.com/submit/"+FORM_ID,{method:"POST",mode:"no-cors",body:fd});return true}catch(e){return false}
 }
-async function fim(v,r){
- ULT={v,r};modo="x";render();
- beep(600,150);setTimeout(()=>beep(600,350),180);
- $("modal").style.display="flex";
- $("mb").innerHTML='<h2>Enviando seu voto…</h2><p>Aguarde um instante.</p>';
- const ok=await postar(v,r);
- if(ok){marcar();$("mb").innerHTML='<h2>✅ Voto registrado</h2><p><b>'+v+'</b></p><p>Obrigado por participar!</p><button class="btn pri" onclick="novo()">Concluir</button>'}
- else $("mb").innerHTML='<h2>Não foi possível enviar</h2><p>Verifique sua internet e tente de novo.</p><button class="btn pri" onclick="fim(ULT.v,ULT.r)">Tentar de novo</button>';
+async function enviar(){
+ $("mb").innerHTML='<h2>Enviando seus votos…</h2><p>Aguarde um instante.</p>';
+ const ok=await postar();
+ if(ok){marcar();beep(600,150);setTimeout(()=>beep(600,350),180);$("mb").innerHTML='<h2>✅ Votos registrados</h2><ol>'+ESC.map(x=>'<li>'+x+'</li>').join("")+'</ol><p>Obrigado por participar!</p><button class="btn pri" onclick="novo()">Concluir</button>'}
+ else $("mb").innerHTML='<h2>Não foi possível enviar</h2><p>Verifique sua internet e tente de novo.</p><button class="btn pri" onclick="enviar()">Tentar de novo</button>';
 }
 function novo(){$("modal").style.display="none";d="";modo="v";render()}
 const tit=s=>s.toLowerCase().split(" ").map(p=>["de","da","do","dos","das","e"].includes(p)?p:p.charAt(0).toUpperCase()+p.slice(1)).join(" ");
 function abrirIdent(){
  $("mb").innerHTML='<h2>Antes de votar</h2>'
- +'<div class="nota">🔒 <b>Informação confidencial.</b> Seu nome fica registrado junto do seu voto e só o responsável pela votação tem acesso. Ele serve apenas para controle, para evitar votos de fora e votos repetidos.</div>'
+ +'<div class="nota">🔒 <b>Informação confidencial.</b> Seu nome fica registrado junto dos seus votos e só o responsável pela votação tem acesso. Ele serve apenas para controle, para evitar votos de fora e votos repetidos.</div>'
+ +'<p><small>Você vai escolher os <b>3 melhores líderes</b>, um de cada vez.</small></p>'
  +'<h3>Seu nome completo</h3><input id="nm" type="text" maxlength="80" autocomplete="name">'
  +'<h3>Seu departamento</h3><select id="dp"><option value="">Escolha…</option>'+DEPS.map(x=>'<option>'+x+'</option>').join("")+'</select>'
  +'<p class="er" id="er"></p><button class="btn pri" onclick="entrar()">Começar a votar</button>';
