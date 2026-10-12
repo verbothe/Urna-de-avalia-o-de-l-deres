@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Urna de Avaliação - Igreja Verbo da Vida</title>
+<!-- Para hospedar: envie este arquivo para o seu site (Netlify, GitHub Pages ou o site da igreja). Preencha CAMPOS no início do script. -->
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#e9ecef;--fg:#1d2327;--card:#fff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1f23;--fg:#e8eaed;--card:#2a2f35}}
+:root[data-theme="dark"]{--bg:#1b1f23;--fg:#e8eaed;--card:#2a2f35}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:14px}
+header{text-align:center;margin-bottom:14px}
+h1{font-size:1.25rem;margin:4px 0}
+header p{margin:0;font-size:.85rem;opacity:.75}
+.wrap{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:16px;align-items:center}
+.urna{background:#d8d6cf;border-radius:14px;padding:14px;display:flex;gap:14px;flex-wrap:wrap;box-shadow:0 6px 20px rgba(0,0,0,.35);width:100%;color:#111}
+.tela{flex:1 1 300px;min-height:310px;background:#f4f4f0;border:4px solid #555;border-radius:6px;padding:12px;display:flex;flex-direction:column}
+.cargo{font-size:.75rem;letter-spacing:.05em}
+.titulo{font-size:1.15rem;font-weight:700;margin:2px 0 10px}
+.num{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.num .l{font-size:.8rem;margin-right:6px}
+.box{width:38px;height:46px;border:2px solid #222;display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:700;background:#fff}
+.box.cur{animation:b 1s steps(1) infinite}
+@keyframes b{50%{background:#e0e0e0}}
+.info{display:flex;gap:10px;flex:1}
+.txt{font-size:.9rem;line-height:1.5;flex:1}
+.foto{width:84px;height:104px;border:2px solid #333;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:#fff;flex:none}
+.rodape{border-top:1px solid #555;margin-top:8px;padding-top:6px;font-size:.72rem;line-height:1.4}
+.aviso{font-size:1.3rem;font-weight:700;text-align:center;margin:auto 0}
+.fim{font-size:4rem;font-weight:800;text-align:center;margin:auto 0;letter-spacing:.1em}
+.teclado{flex:0 0 190px;background:#2c2c2c;border-radius:8px;padding:10px;margin:0 auto}
+.logo{color:#ddd;font-size:.7rem;text-align:center;margin-bottom:8px}
+.grid,.acoes{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.acoes{margin-top:10px}
+.k{background:#111;color:#fff;border:0;border-radius:5px;height:46px;font-size:1.3rem;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #000}
+.k.zero{grid-column:2}
+.a{border:0;border-radius:5px;height:50px;font-weight:800;font-size:.62rem;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.5)}
+.branco{background:#f5f5f5;color:#111}.corrige{background:#f07d1c;color:#111}.confirma{background:#2fa84f;color:#fff;font-size:.7rem}
+.painel{background:var(--card);border-radius:12px;padding:14px;width:100%}
+.painel h2{font-size:1rem;margin:0 0 8px}
+#lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:4px 14px;font-size:.88rem}
+small{opacity:.75}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:16px;z-index:10}
+.mbox{background:var(--card);color:var(--fg);max-width:520px;width:100%;max-height:90vh;overflow:auto;border-radius:12px;padding:16px}
+.mbox label{display:block;margin:4px 0;font-size:.9rem}
+.mbox h2{font-size:1.05rem;margin:0 0 4px}
+.mbox h3{font-size:.92rem;margin:14px 0 4px}
+.mbox textarea{width:100%;min-height:60px;border-radius:8px;border:1px solid #888;padding:8px;font:inherit;background:transparent;color:inherit}
+.btn{display:inline-block;text-decoration:none;background:#2563eb;color:#fff;border:0;border-radius:8px;padding:9px 14px;cursor:pointer;font-size:.85rem;margin:8px 4px 0 0}
+.btn.sec{background:#6b7280}
+</style></head>
+<body>
+<header>
+<h1>Igreja Verbo da Vida - Marcolândia/PI</h1>
+<p>Urna de avaliação de líderes · dinâmica de comunhão entre líderes e liderados</p>
+</header>
+<div class="wrap">
+<div class="urna">
+ <div class="tela" id="tela"></div>
+ <div class="teclado">
+  <div class="logo">URNA ELETRÔNICA · SIMULADOR</div>
+  <div class="grid" id="grid"></div>
+  <div class="acoes">
+   <button class="a branco" onclick="branco()">BRANCO</button>
+   <button class="a corrige" onclick="corrige()">CORRIGE</button>
+   <button class="a confirma" onclick="confirma()">CONFIRMA</button>
+  </div>
+ </div>
+</div>
+<div class="painel"><h2>Números dos líderes</h2><div id="lista"></div></div>
+</div>
+<div class="modal" id="modal"><div class="mbox" id="mb"></div></div>
+<script>
+const L=[["Oseias e Ariane",""],["Felipe e Morgana",""],["Queila e Wilson","Diáconos"],["Breno e Rebeca","Acolhe/Evangelismo"],["Dhjuam e Mariana","Abraço"],["Adairlan e Aline","Jovens e adolescentes"],["Venicius e Bruna","Infantil"],["Vanessa e Samy","Comunicação"],["Igor","Sonoplastia"],["Jonas","Louvor"],["Gil e Erlania","Social"],["Milene","Verbo Shop"],["Aparecida","Verbo Café"],["Maila","Connecte"],["Delzuite e Edna Gardênia","Oração"],["Queila","Eventos"],["Edna Gardênia e Janaína","Mulheres"],["Maycon e Érika","Gestão de Culto"],["Roberio","Segurança"],["Sandro","Trânsito"],["Paullo Rossi","Homens"]];
+const BOM=["Sim","Mais ou menos","Não"],OUVE=["Sim, sempre","Às vezes","Raramente","Não"];
+const F=["Comunicação","Organização","Motivar a equipe","Tomar decisões","Dar o exemplo","Resolver conflitos","Ouvir as pessoas"];
+const M=["Ouvir mais","Comunicação","Organização","Paciência","Dar feedback","Reconhecer o trabalho dos outros","Tomar decisões"];
+const COR=["#d9822b","#2b7bd9","#2fa84f","#a33bd1","#c2410c","#0e7490","#be185d"];
+const ZAP=""; // número do WhatsApp do responsável (com 55 + DDD), ex.: "5589999999999"
+let d="",modo="v",cod="";
+const $=id=>document.getElementById(id);
+const num=i=>String(i+1).padStart(2,"0");
+const cand=()=>d.length===2&&+d>=1&&+d<=L.length?L[+d-1]:null;
+function beep(f,t){try{const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+t/1000)}catch(e){}}
+function render(){
+ const t=$("tela");
+ if(modo==="x"){t.innerHTML='<div class="fim">FIM</div>';return}
+ let h='<div class="cargo">SEU VOTO PARA</div><div class="titulo">Líder</div>';
+ if(modo==="b")h+='<div class="aviso">VOTO EM BRANCO</div>';
+ else{
+  h+='<div class="num"><span class="l">Número:</span>';
+  for(let i=0;i<2;i++)h+='<div class="box'+(i===d.length?' cur':'')+'">'+(d[i]||"")+'</div>';
+  h+='</div>';
+  if(d.length===2){const c=cand();
+   h+=c?'<div class="info"><div class="txt"><b>Líder(es):</b> '+c[0]+(c[1]?'<br><b>Departamento:</b> '+c[1]:'')+'</div><div class="foto" style="background:'+COR[+d%COR.length]+'">'+c[0][0]+'</div></div>'
+   :'<div class="info"><div class="txt"><b>NÚMERO ERRADO</b><br><b>VOTO NULO</b></div></div>'}
+ }
+ h+='<div class="rodape">VERDE para CONFIRMAR este voto<br>LARANJA para REINICIAR este voto</div>';
+ t.innerHTML=h;
+}
+function tecla(x){if(modo!=="v"||d.length>=2)return;d+=x;beep(900,80);render()}
+function corrige(){if(modo==="x")return;d="";modo="v";beep(500,80);render()}
+function branco(){if(modo==="x")return;d="";modo="b";beep(700,80);render()}
+function confirma(){
+ if(modo==="x")return;
+ if(modo==="b")return fim("Voto em branco");
+ if(d.length<2){beep(300,200);return}
+ if(!cand())return fim("Voto nulo");
+ modo="x";render();abrir();
+}
+const FORM_ID="262838356203055";
+const FORM="https://form.jotform.com/"+FORM_ID;
+// Nomes internos dos campos no Jotform (ex.: "q3_lider"). Enquanto estiverem vazios, a urna abre o formulário para concluir o voto.
+const CAMPOS={lider:"",bom:"",ouve:"",fortes:"",melhorar:"",comentario:""};
+const pronto=()=>Object.values(CAMPOS).every(Boolean);
+const rot=i=>num(i)+" - "+L[i][0]+(L[i][1]?" ("+L[i][1]+")":"");
+const chk=(n,a)=>a.map((o,i)=>'<label><input type="checkbox" name="'+n+'" value="'+i+'"> '+o+'</label>').join("");
+const rad=(n,a)=>a.map((o,i)=>'<label><input type="radio" name="'+n+'" value="'+i+'"> '+o+'</label>').join("");
+const vals=n=>[...document.querySelectorAll('#mb [name="'+n+'"]:checked')].map(x=>x.value);
+function abrir(){
+ const c=cand();
+ $("mb").innerHTML='<h2>Avalie: '+c[0]+(c[1]?' ('+c[1]+')':'')+'</h2><small>Opcional. Você pode pular.</small>'
+ +'<h3>É um bom líder?</h3>'+rad("bom",BOM)
+ +'<h3>Ele ouve a equipe?</h3>'+rad("ouve",OUVE)
+ +'<h3>No que o líder é bom?</h3>'+chk("f",F)
+ +'<h3>O que precisa melhorar?</h3>'+chk("m",M)
+ +'<h3>Comentário (opcional)</h3><textarea id="tx" maxlength="300"></textarea>'
+ +'<div><button class="btn" onclick="enviar(false)">Enviar avaliação</button><button class="btn sec" onclick="enviar(true)">Pular</button></div>';
+ $("modal").style.display="flex";
+}
+function enviar(p){
+ const r={bom:"",ouve:"",f:[],m:[],t:""};
+ if(!p){r.bom=vals("bom")[0]||"";r.ouve=vals("ouve")[0]||"";r.f=vals("f");r.m=vals("m");r.t=$("tx").value.trim().slice(0,300)}
+ fim(rot(+d-1),r);
+}
+async function postar(v,r){
+ const fd=new FormData(),add=(k,x)=>fd.append(k,x);
+ add("formID",FORM_ID);add(CAMPOS.lider,v);
+ if(r.bom!=="")add(CAMPOS.bom,BOM[r.bom]);
+ if(r.ouve!=="")add(CAMPOS.ouve,OUVE[r.ouve]);
+ const ar=k=>k.endsWith("[]")?k:k+"[]";
+ r.f.forEach(i=>add(ar(CAMPOS.fortes),F[i]));
+ r.m.forEach(i=>add(ar(CAMPOS.melhorar),M[i]));
+ if(r.t)add(CAMPOS.comentario,r.t);
+ try{await fetch("https://submit.jotform.com/submit/"+FORM_ID,{method:"POST",mode:"no-cors",body:fd});return true}catch(e){return false}
+}
+async function fim(v,r){
+ r=r||{bom:"",ouve:"",f:[],m:[],t:""};
+ modo="x";render();
+ beep(600,150);setTimeout(()=>beep(600,350),180);
+ const h='<h2>✅ Voto registrado</h2><p><b>'+v+'</b></p>';
+ const fb='<p>Toque em <b>Enviar meu voto</b> para concluir.</p><a class="btn" target="_blank" rel="noopener" href="'+FORM+'?lider='+encodeURIComponent(v)+'">Enviar meu voto</a>';
+ const nv='<button class="btn sec" onclick="novo()">Novo voto</button>';
+ $("modal").style.display="flex";
+ if(!pronto()){$("mb").innerHTML=h+fb+nv;return}
+ $("mb").innerHTML=h+'<p>Enviando…</p>';
+ const ok=await postar(v,r);
+ $("mb").innerHTML=h+(ok?'<p>Voto enviado. Obrigado por participar!</p>':'<p>Não foi possível enviar agora.</p>'+fb)+nv;
+}
+function novo(){$("modal").style.display="none";d="";modo="v";render()}
+const g=$("grid");
+[1,2,3,4,5,6,7,8,9,0].forEach(n=>{const b=document.createElement("button");b.className="k"+(n===0?" zero":"");b.textContent=n;b.onclick=()=>tecla(String(n));g.appendChild(b)});
+document.addEventListener("keydown",e=>{
+ if($("modal").style.display==="flex")return;
+ if(e.key>="0"&&e.key<="9")tecla(e.key);else if(e.key==="Enter")confirma();else if(e.key==="Backspace")corrige();else if(e.key==="b"||e.key==="B")branco();
+});
+$("lista").innerHTML=L.map((c,i)=>'<div><b>'+num(i)+'</b> '+c[0]+(c[1]?' <small>· '+c[1]+'</small>':'')+'</div>').join("");
+render();
+</script></body></html>
