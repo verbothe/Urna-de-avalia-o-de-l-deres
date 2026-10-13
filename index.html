@@ -56,6 +56,8 @@ body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-
 .chip input:checked+span{background:var(--amb);border-color:var(--amb);color:#111;font-weight:700}
 .chip input:focus-visible+span{outline:3px solid rgba(245,158,11,.5)}
 .passo{display:inline-block;background:var(--amb);color:#111;font-weight:800;font-size:.78rem;border-radius:999px;padding:3px 12px;margin:0 0 10px}
+.regras{background:var(--ink);color:#fff;border-radius:12px;padding:12px 14px;margin:8px 0;font-size:.92rem;border-left:5px solid var(--amb)}
+.regras b:first-child{color:var(--amb2);font-size:1rem}.regras ol{margin:8px 0 0;padding-left:20px}.regras li{margin:6px 0}
 .er{color:#dc2626;font-size:.88rem;min-height:1.3em;margin:8px 0 0;font-weight:600}
 .btn{background:var(--ink);color:var(--amb2);border:2px solid var(--amb);border-radius:12px;padding:12px 20px;font-size:1rem;font-weight:800;cursor:pointer;margin:10px 8px 0 0}
 .btn.pri{background:var(--amb);color:#111}.btn:disabled{opacity:.55}
@@ -68,7 +70,7 @@ body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-
   <div class="tec"><div class="logo">URNA ELETRÔNICA</div><div class="grid3" id="grid"></div>
    <div class="ac"><button class="a branco" onclick="branco()">BRANCO</button><button class="a corrige" onclick="corrige()">CORRIGE</button><button class="a confirma" onclick="confirma()">CONFIRMA</button></div></div>
  </section>
- <aside class="card"><h2>Números dos líderes</h2><div id="lista"></div></aside>
+ <aside class="card"><div id="regras"></div><h2 style="margin-top:16px">Números dos líderes</h2><div id="lista"></div></aside>
 </main>
 <div class="modal" id="modal"><div class="mbox" id="mb"></div></div>
 <script>
@@ -80,7 +82,7 @@ const CHAVE="verbo_votou",LIBERAR="verbo21"; // para liberar um aparelho: abra o
 try{if(new URLSearchParams(location.search).get("liberar")===LIBERAR)localStorage.removeItem(CHAVE)}catch(e){}
 const jaVotou=()=>{try{return localStorage.getItem(CHAVE)==="1"}catch(e){return false}};
 const marcar=()=>{try{localStorage.setItem(CHAVE,"1")}catch(e){}};
-let d="",modo="v",ident=false,NOME="",DEPT="",ESC=[],ESCN=[];
+let d="",modo="v",ident=false,NOME="",DEPT="",ESC=[],ESCN=[],MEU="";
 const $=id=>document.getElementById(id);
 const num=i=>String(i+1).padStart(2,"0");
 const cand=()=>d.length===2&&+d>=1&&+d<=L.length?L[+d-1]:null;
@@ -109,7 +111,7 @@ function render(){
   h+='</div>';
   if(d.length===2){const c=cand();
    if(!c)h+='<div class="info"><div class="txt"><b>NÚMERO ERRADO</b><br><b>VOTO NULO</b></div></div>';
-   else h+='<div class="info"><div class="txt"><b>Líder(es):</b> '+c[0]+(c[1]?'<br><b>Departamento:</b> '+c[1]:'')+(ESCN.includes(d)?'<br><b style="color:#b91c1c">Você já escolheu este líder.</b>':'')+'</div>'+fotos(c,d)+'</div>'}
+   else h+='<div class="info"><div class="txt"><b>Líder(es):</b> '+c[0]+(c[1]?'<br><b>Departamento:</b> '+c[1]:'')+(ESCN.includes(d)?'<br><b style="color:#b91c1c">Você já escolheu este líder.</b>':'')+(d===MEU?'<br><b style="color:#b91c1c">Líder não vota em si mesmo.</b>':'')+'</div>'+fotos(c,d)+'</div>'}
  }
  h+='<div class="rodape">'+(ESCN.filter(x=>x).length?'Já escolhidos: '+ESCN.filter(x=>x).join(", ")+' · ':'')+'CONFIRMA registra o voto · CORRIGE reinicia</div>';
  t.innerHTML=h;
@@ -125,7 +127,7 @@ function confirma(){
  else{
   if(d.length<2){beep(300,200);return}
   if(!cand())r="Voto nulo";
-  else{if(ESCN.includes(d)){beep(300,300);return}r=rot(+d-1);c=d}
+  else{if(ESCN.includes(d)||d===MEU){beep(300,300);return}r=rot(+d-1);c=d}
  }
  ESC.push(r);ESCN.push(c);d="";modo="v";beep(600,150);
  if(ESC.length<3)render();else revisar();
@@ -151,20 +153,25 @@ async function enviar(){
 }
 function novo(){$("modal").style.display="none";d="";modo="v";render()}
 const tit=s=>s.toLowerCase().split(" ").map(p=>["de","da","do","dos","das","e"].includes(p)?p:p.charAt(0).toUpperCase()+p.slice(1)).join(" ");
+const REGRAS='<div class="regras"><b>📋 Regras</b><ol><li><b>Cada participante tem direito a 3 votos.</b> Você, liderado, pode escolher até três líderes, incluindo o seu próprio líder ou outros de sua preferência.</li><li><b>Líder não vota em si mesmo.</b> Se você é líder, deve indicar outros líderes.</li></ol></div>';
+function tl(){const e=document.querySelector('#mb [name="el"]:checked');$("ql").style.display=e&&e.value==="s"?"block":"none"}
 function abrirIdent(){
- $("mb").innerHTML='<h2>Antes de votar</h2>'
+ $("mb").innerHTML='<h2>Antes de votar</h2>'+REGRAS
  +'<div class="nota">🔒 <b>Informação confidencial.</b> Seu nome fica registrado junto dos seus votos e só o responsável pela votação tem acesso. Ele serve apenas para controle, para evitar votos de fora e votos repetidos.</div>'
- +'<p><small>Você vai escolher os <b>3 melhores líderes</b>, um de cada vez.</small></p>'
  +'<h3>Seu nome completo</h3><input id="nm" type="text" maxlength="80" autocomplete="name">'
  +'<h3>Seu departamento</h3><select id="dp"><option value="">Escolha…</option>'+DEPS.map(x=>'<option>'+x+'</option>').join("")+'</select>'
+ +'<h3>Você é líder?</h3><div class="chips"><label class="chip"><input type="radio" name="el" value="n" onchange="tl()"><span>Não, sou liderado</span></label><label class="chip"><input type="radio" name="el" value="s" onchange="tl()"><span>Sim, sou líder</span></label></div>'
+ +'<div id="ql" style="display:none"><h3>Qual é o seu número de líder?</h3><select id="ln"><option value="">Escolha…</option>'+L.map((c,i)=>'<option value="'+num(i)+'">'+num(i)+' - '+c[0]+(c[1]?' ('+c[1]+')':'')+'</option>').join("")+'</select></div>'
  +'<p class="er" id="er"></p><button class="btn pri" onclick="entrar()">Começar a votar</button>';
  $("modal").style.display="flex";
 }
 function entrar(){
- const n=$("nm").value.trim().replace(/\s+/g," "),dp=$("dp").value;
+ const n=$("nm").value.trim().replace(/\s+/g," "),dp=$("dp").value,e=document.querySelector('#mb [name="el"]:checked'),ln=$("ln").value;
  if(n.length<5||n.indexOf(" ")<0){$("er").textContent="Digite seu nome completo.";return}
  if(!dp){$("er").textContent="Escolha o seu departamento.";return}
- NOME=tit(n);DEPT=dp;ident=true;$("modal").style.display="none";render();
+ if(!e){$("er").textContent="Informe se você é líder.";return}
+ if(e.value==="s"&&!ln){$("er").textContent="Escolha o seu número de líder.";return}
+ NOME=tit(n);DEPT=dp;MEU=e.value==="s"?ln:"";ident=true;$("modal").style.display="none";render();
 }
 const g=$("grid");
 [1,2,3,4,5,6,7,8,9,0].forEach(n=>{const b=document.createElement("button");b.className="k"+(n===0?" z":"");b.textContent=n;b.onclick=()=>tecla(String(n));g.appendChild(b)});
@@ -173,6 +180,7 @@ document.addEventListener("keydown",e=>{
  if(e.key>="0"&&e.key<="9")tecla(e.key);else if(e.key==="Enter")confirma();else if(e.key==="Backspace")corrige();else if(e.key==="b"||e.key==="B")branco();
 });
 $("lista").innerHTML=L.map((c,i)=>'<div><b>'+num(i)+'</b><span>'+c[0]+(c[1]?' <small>· '+c[1]+'</small>':'')+'</span></div>').join("");
+$("regras").innerHTML=REGRAS;
 render();
 if(!jaVotou())abrirIdent();
 </script></body></html>
