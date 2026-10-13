@@ -9,35 +9,35 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45;padding-bottom:env(safe-area-inset-bottom)}
-.top{background:var(--ink);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 16px 18px;border-bottom:4px solid var(--amb);text-align:center}
+.top{background:var(--ink);color:#fff;padding:calc(12px + env(safe-area-inset-top)) 14px 12px;border-bottom:4px solid var(--amb);text-align:center}
 .top h1{margin:0;font-size:clamp(1.05rem,3.6vw,1.7rem);color:var(--amb2);letter-spacing:.01em}
 .top p{margin:4px 0 0;font-size:clamp(.78rem,2.4vw,.95rem);color:#e5e5e5}
-.wrap{max-width:1040px;margin:0 auto;padding:18px 14px 30px;display:grid;gap:18px;grid-template-columns:1fr}
+.wrap{max-width:1040px;margin:0 auto;padding:12px 12px 24px;display:grid;gap:14px;grid-template-columns:1fr}
 @media (min-width:900px){.wrap{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start}}
-.urna{background:#141416;border:1px solid #2b2b30;border-radius:22px;padding:14px;display:flex;flex-wrap:wrap;gap:14px;box-shadow:0 14px 34px rgba(0,0,0,.28)}
-.tela{flex:1 1 270px;min-height:330px;background:#fffdf7;color:#111;border:3px solid var(--amb);border-radius:14px;padding:14px;display:flex;flex-direction:column}
-.cargo{font-size:.72rem;letter-spacing:.12em;color:var(--ambd);font-weight:700}
-.titulo{font-size:1.3rem;font-weight:800;margin:2px 0 12px}
-.num{display:flex;gap:8px;align-items:center;margin-bottom:10px}.num .l{font-size:.85rem;margin-right:4px}
-.box{width:44px;height:54px;border:2px solid #111;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.9rem;font-weight:800;background:#fff}
-.box.cur{border-color:var(--amb);box-shadow:0 0 0 3px rgba(245,158,11,.35)}
-.info{display:flex;gap:12px;flex:1;align-items:flex-start}.txt{font-size:.95rem;flex:1}
-.foto{position:relative;overflow:hidden;width:96px;height:120px;border-radius:12px;background:linear-gradient(160deg,var(--amb2),var(--ambd));display:flex;align-items:center;justify-content:center;font-size:2.4rem;font-weight:800;color:#111;flex:none}
+.urna{font-size:clamp(10px,2.85vw,15px);display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:.9em;padding:1em;max-width:620px;margin:0 auto;width:100%;background:linear-gradient(#e4e1d8,#cdcac0);border:1px solid #a9a69b;border-radius:1.2em;box-shadow:0 10px 26px rgba(0,0,0,.3),inset 0 1px 0 #fff;color:#111}
+.tela{background:#f7f7f2;border:.4em solid #55554f;border-radius:.5em;padding:.8em;min-height:23em;display:flex;flex-direction:column;box-shadow:inset 0 0 .6em rgba(0,0,0,.25)}
+.cargo{font-size:.68em;letter-spacing:.1em;color:#333;font-weight:700}
+.titulo{font-size:1.2em;font-weight:800;margin:.1em 0 .4em}
+.num{display:flex;gap:.4em;align-items:center;margin:.3em 0 .6em}.num .l{font-size:.78em;margin-right:.3em}
+.box{width:1.6em;height:1.9em;border:.12em solid #111;font-size:1.5em;font-weight:800;display:flex;align-items:center;justify-content:center;background:#fff}
+.box.cur{border-color:var(--amb);box-shadow:0 0 0 .1em rgba(245,158,11,.5)}
+.info{display:flex;gap:.6em;flex:1;align-items:flex-start;flex-wrap:wrap}.txt{font-size:.82em;flex:1 1 7em;line-height:1.4}
+.foto{position:relative;overflow:hidden;width:6em;height:7.5em;border:.1em solid #333;background:linear-gradient(160deg,var(--amb2),var(--ambd));display:flex;align-items:center;justify-content:center;font-weight:800;color:#111;flex:none}
+.foto span{font-size:2.2em}
 .foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.fotos{display:flex;gap:8px;flex:none}.fotos .foto{width:76px;height:96px;font-size:1.9rem}
-.fotos.solo .foto:nth-child(1){width:96px;height:120px}.fotos.solo .foto:nth-child(2){display:none}
-.info{flex-wrap:wrap}.txt{flex:1 1 150px}
-.rodape{border-top:1px solid #d9d4c6;margin-top:10px;padding-top:8px;font-size:.74rem;color:#555}
-.aviso{font-size:1.35rem;font-weight:800;text-align:center;margin:auto 0}.aviso small{font-weight:500;font-size:.85rem}
-.fim{font-size:4rem;font-weight:900;text-align:center;margin:auto 0;letter-spacing:.1em}
-.tec{flex:0 0 210px;margin:0 auto;width:100%;max-width:420px;background:#0b0b0c;border-radius:14px;padding:12px}
-.logo{color:var(--amb2);font-size:.68rem;text-align:center;letter-spacing:.14em;margin-bottom:10px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.k{background:#26262b;color:#fff;border:0;border-radius:10px;height:54px;font-size:1.4rem;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #000}
-.k:active,.a:active{transform:translateY(2px)}.k.z{grid-column:2}
-.ac{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.a{border:0;border-radius:10px;min-height:54px;font-weight:800;font-size:.66rem;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.6)}
-.branco{background:#fff;color:#111}.corrige{background:var(--ambd);color:#fff}.confirma{background:var(--amb);color:#111;font-size:.72rem}
+.fotos{display:flex;gap:.4em;flex:none}.fotos .foto{width:4.8em;height:6.2em}.fotos .foto span{font-size:1.8em}
+.fotos.solo .foto:nth-child(1){width:6em;height:7.5em}.fotos.solo .foto:nth-child(2){display:none}
+.rodape{border-top:.08em solid #888;margin-top:.5em;padding-top:.4em;font-size:.62em;color:#333;line-height:1.35}
+.aviso{font-size:1.2em;font-weight:800;text-align:center;margin:auto 0}.aviso small{font-weight:500;font-size:.7em}
+.fim{font-size:3.4em;font-weight:900;text-align:center;margin:auto 0;letter-spacing:.1em}
+.tec{background:#3b3b3e;border-radius:.7em;padding:.7em;display:flex;flex-direction:column;gap:.6em;box-shadow:inset 0 0 .5em rgba(0,0,0,.6)}
+.logo{color:#d6d6d6;font-size:.52em;text-align:center;letter-spacing:.14em}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.4em}
+.k{background:#0e0e0f;color:#fff;border:0;border-radius:.35em;height:2.6em;font-size:1.15em;font-weight:700;cursor:pointer;box-shadow:0 .15em 0 #000}
+.k:active,.a:active{transform:translateY(.1em)}.k.z{grid-column:2}
+.ac{display:grid;grid-template-columns:1fr 1fr;gap:.4em;margin-top:.2em}
+.a{border:0;border-radius:.35em;min-height:3em;font-weight:800;font-size:.62em;cursor:pointer;box-shadow:0 .2em 0 rgba(0,0,0,.6)}
+.branco{background:#fff;color:#111}.corrige{background:#f26b21;color:#111}.confirma{grid-column:1/-1;background:#2ea043;color:#fff;min-height:3.4em;font-size:.72em}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
 .card h2{margin:0 0 10px;font-size:1.05rem}
 #lista{display:grid;gap:6px}
@@ -88,6 +88,14 @@ const num=i=>String(i+1).padStart(2,"0");
 const cand=()=>d.length===2&&+d>=1&&+d<=L.length?L[+d-1]:null;
 const rot=i=>num(i)+" - "+L[i][0]+(L[i][1]?" ("+L[i][1]+")":"");
 function beep(f,t){try{const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+t/1000)}catch(e){}}
+let temMp3=true;
+function beepLongo(){try{const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime;o.type="sine";o.frequency.value=1000;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.2,t+.03);g.gain.setValueAtTime(.2,t+.75);g.gain.exponentialRampToValueAtTime(.0001,t+.95);o.connect(g);g.connect(c.destination);o.start();o.stop(t+1)}catch(e){}}
+// Som de confirmação: usa o arquivo confirma.mp3 (colocado junto do index.html), se existir; senão toca um bipe longo parecido.
+function somConfirma(){
+ if(!temMp3){beepLongo();return}
+ let u=false;const fb=()=>{if(!u){u=true;temMp3=false;beepLongo()}};
+ try{const a=new Audio("confirma.mp3");a.onerror=fb;const p=a.play();if(p&&p.catch)p.catch(fb)}catch(e){fb()}
+}
 const EXT=[".jpg",".png",".jpg.jpg",".png.png",".jpeg",".JPG",".PNG"];
 // Fotos: NN.jpg para líder único; NNa.jpg e NNb.jpg para dois líderes (na ordem do nome); se só existir NN.jpg, ele serve para a dupla.
 function fe(i){const s=i.dataset.s.split(","),n=(+i.dataset.n||0)+1;i.dataset.n=n;const b=s[Math.floor(n/EXT.length)];if(b!==undefined)i.src=b+EXT[n%EXT.length];else i.style.display="none"}
@@ -129,7 +137,7 @@ function confirma(){
   if(!cand())r="Voto nulo";
   else{if(ESCN.includes(d)||d===MEU){beep(300,300);return}r=rot(+d-1);c=d}
  }
- ESC.push(r);ESCN.push(c);d="";modo="v";beep(600,150);
+ ESC.push(r);ESCN.push(c);d="";modo="v";somConfirma();
  if(ESC.length<3)render();else revisar();
 }
 function revisar(){
